@@ -5,6 +5,9 @@
 #include <fstream>
 #include <string>
 
+#include "lib/matriz.h"
+#include "lib/arbol.h"
+
 /*
    + Tres ficheros, uno para cada matriz (adyacencia, costos y heurística)
 
@@ -31,68 +34,6 @@ using namespace std;
 #define BUFFSIZE 256
 #define SEPARADOR '	'
 
-class Matriz {
-   // Esta clase implementa una matriz cuadrada de numeros enteros
-   protected:
-      int **_base;    // Vector que almacenará la matriz
-      uint8_t _dim;  // Tamaño de la matriz
-
-   public:
-   /* CONSTRUCTORES */
-      // Constructor por defecto
-      Matriz(){
-         _dim = 4;
-         _base = (int **) calloc(_dim, sizeof(int *));
-         for (uint16_t i = 0; i < _dim; i++){
-            _base[i] = (int *) calloc(_dim, sizeof(int));
-         }        
-      }
-      // Constructor con parámetro (tamaño de matriz)
-      Matriz(uint8_t d){
-         _dim = d;
-         _base = (int **) calloc(_dim, sizeof(int *));
-         for (uint16_t i = 0; i < _dim; i++){
-            _base[i] = (int *) calloc(_dim, sizeof(int));
-         }
-      }
-
-   /* GETTER y SETTER */
-      // Devuelve el valor en la posición (i,j)
-      int Get (uint8_t i, uint8_t j){
-         if ((i < _dim)&&(j < _dim)){
-            return _base[i][j];
-         }
-         return -1;
-      }
-      // Establece el valor en la posición (i,j) el valor 'value'
-      void Set (uint8_t i, uint8_t j, int value){
-         if ((i < _dim)&&(j < _dim)){
-            _base[i][j] = value;
-         }
-      }
-      // Cambia el valor de "_dim" y vuelve a hacer el mapeo de memoria (si el nuevo tamaño es mayor al actual)
-      // Se pierde la infomación de la matriz (si el nuevo tamaño es mayor al actual)
-      void SetDim (uint8_t d){
-         if (_dim < d){
-            _dim = d;
-            _base = (int **) calloc(_dim, sizeof(int *));
-            for (uint16_t i = 0; i < _dim; i++)
-               _base[i] = (int *) calloc(_dim, sizeof(int));
-         }else
-            _dim = d;
-      }
-
-   /* OTRAS */
-      // Muestra la matriz por pantalla
-      void Print (){
-         for (uint16_t i = 0; i < _dim; i++){
-            for (uint16_t j = 0; j < _dim; j++){
-               cout << _base[i][j] << " ";
-            }
-            cout << endl;
-         }
-      }
-};
 
 /* FUNCIONES AUXILIARES de manejo de char* */
 void ResetChar (char* str, uint16_t size){
@@ -108,7 +49,7 @@ bool IsEmpty (char* str, uint16_t size){
 }
 
 // Lee el fichero 'path' y parsea su contenido dentro de la matriz 'mat'
-void ParseFile (char* path, Matriz *mat){
+void ParseFile (char* path, Matriz* mat){
    fstream file;
    char *buff2 = new char[BUFFSIZE];
    string buff;
@@ -164,13 +105,16 @@ void ParseFile (char* path, Matriz *mat){
 
 int main (){
 
-   Matriz *mat = new Matriz();
+   Matriz *adya = new Matriz();
+   Matriz *costos = new Matriz();
    
-   ParseFile("datos/MatrizAdyacencia.txt", mat);
-   mat->Print();
-   ParseFile("datos/MatrizCostos.txt", mat);
-   mat->Print();
+   
+   ParseFile("datos/binary.dat", adya);
+   adya->Print();
+   ParseFile("datos/costo.dat", costos);
+   costos->Print();
 
+   Nodo* node = new Nodo(0);
    return 0;
 }
 

@@ -1,29 +1,27 @@
 # makefile programa P2
 
-# Ficheros con codigo fuente
-MAIN = main.cpp
-SRCS =
-INCS =
-OBJS = main.o
-EXEC = pract2
-LIBS =
-
-# Compilador y opciones
-#
 CC = g++
-CFLAGS = -c -ansi -pedantic
+CFLAGS = -ansi -pedantic
 CDEBUG = -g
+OBJS = main.o matriz.o arbol.o
+MAIN = pract2
+EXEC = pract2
 
-# Reglas
-#
-default: $(EXEC)
+MAIN: $(OBJS)
+	$(CC) $(CDEBUG) $(CFLAGS) -o $(EXEC) $^
 
-$(EXEC): $(OBJS)
-	$(CC) -o $(EXEC) $(OBJS) $(LIBS)
+main.o: main.cpp
+	$(CC) $(CDEBUG) $(CFLAGS) -c $<
 
-$(OBJS): $(MAIN) $(SRCS) $(INCS)
-	$(CC) $(CFLAGS) $(CDEBUG) $(MAIN) $(SRCS)
+matriz.o: lib/matriz.cpp lib/matriz.h
+	$(CC) $(CDEBUG) $(CFLAGS) -c $<
+
+arbol.o: lib/arbol.cpp lib/arbol.h
+	$(CC) $(CDEBUG) $(CFLAGS) -c $<
+
+
+.PHONY: clean
 
 clean:
-	rm -f $(OBJS) $(EXEC) core*.*
+	rm -f $(OBJS) $(EXEC) $@
 
