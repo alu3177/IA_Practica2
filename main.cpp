@@ -29,7 +29,7 @@
 using namespace std;
 
 #define BUFFSIZE 256
-#define SEPARADOR ' '
+#define SEPARADOR '	'
 
 class Matriz {
    // Esta clase implementa una matriz cuadrada de numeros enteros
@@ -94,7 +94,7 @@ class Matriz {
       }
 };
 
-/* FUNCIONES AUXILIARES */
+/* FUNCIONES AUXILIARES de manejo de char* */
 void ResetChar (char* str, uint16_t size){
    for (uint16_t i = 0; i < size; i++)
       str[i] = 0;
@@ -148,6 +148,7 @@ void ParseFile (char* path, Matriz *mat){
                   j++;
                // Introducir numero en la matriz
                }else if (!IsEmpty(buff2, BUFFSIZE)){
+                  //cout << "Insertando: " << atoi(buff2) << endl;    // DEBUG
                   mat->Set(fila, col, atoi(buff2));
                   col++;
                   ResetChar (buff2, BUFFSIZE);
@@ -165,9 +166,9 @@ int main (){
 
    Matriz *mat = new Matriz();
    
-   ParseFile("datos/binary.dat", mat);
+   ParseFile("datos/MatrizAdyacencia.txt", mat);
    mat->Print();
-   ParseFile("datos/pesos.dat", mat);
+   ParseFile("datos/MatrizCostos.txt", mat);
    mat->Print();
 
    return 0;
