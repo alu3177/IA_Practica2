@@ -3,7 +3,7 @@
 CC = g++
 CFLAGS = -ansi -pedantic
 CDEBUG = -g
-OBJS = main.o matriz.o arbol.o
+OBJS = main.o matriz.o problema.o
 MAIN = pract2
 EXEC = pract2
 
@@ -16,7 +16,7 @@ main.o: main.cpp
 matriz.o: lib/matriz.cpp lib/matriz.h
 	$(CC) $(CDEBUG) $(CFLAGS) -c $<
 
-arbol.o: lib/arbol.cpp lib/arbol.h
+problema.o: lib/problema.cpp lib/problema.h
 	$(CC) $(CDEBUG) $(CFLAGS) -c $<
 
 

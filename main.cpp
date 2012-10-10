@@ -6,7 +6,7 @@
 #include <string>
 
 #include "lib/matriz.h"
-#include "lib/arbol.h"
+#include "lib/problema.h"
 
 /*
    + Tres ficheros, uno para cada matriz (adyacencia, costos y heurística)
@@ -114,7 +114,25 @@ int main (){
    ParseFile("datos/costo.dat", costos);
    costos->Print();
 
-   Nodo* node = new Nodo(0);
+   Nodo* node = new Nodo(1);
+   Nodo* tmp = new Nodo(2, node);
+   node->AddHijo(tmp);
+   tmp = new Nodo(3, node);
+   node->AddHijo(tmp);
+   tmp = new Nodo(8, node);
+   node->AddHijo(tmp);
+   
+   node->Print();
+   cout << endl;
+   node->GetHijos()->at(0)->Print();
+   cout << endl;
+   node->GetHijos()->at(1)->Print();
+   cout << endl;
+   node->GetHijos()->at(2)->Print();
+   cout << endl;
+
+   //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
+   
    return 0;
 }
 
