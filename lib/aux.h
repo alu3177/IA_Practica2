@@ -1,38 +1,26 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <iostream>
 #include <fstream>
-#include <string>
-
-#include "lib/matriz.h"
-#include "lib/problema.h"
-
-/*
-   + Tres ficheros, uno para cada matriz (adyacencia, costos y heurística)
-
-   + Fichero de valores Heurísticos:
-
-      Es una matriz con estimaciones de las distancias.
-      Matriz heurística
-
-      4
-      0 1 2 2
-      pesos pesos pesos estimados
-
-
-
-
-   + Los vértices de cada nivel de un árbol van ordenados segun su número, para mantener el orden de las búsquedas.
-
-   + Debe preguntar al user los vértices inicial y final.
-   + Como salida => El salido encontrado (con cada búsqueda) y cuantos nodos se han explorado.
-*/
 
 using namespace std;
 
-/*
-// Lee el fichero 'path' y parsea su contenido dentro de la matriz 'mat'
+#define BUFFSIZE 256
+#define SEPARADOR '	'
+
+/* FUNCIONES AUXILIARES de manejo de char* */
+void ResetChar (char* str, uint16_t size){
+   for (uint16_t i = 0; i < size; i++)
+      str[i] = 0;
+}
+
+bool IsEmpty (char* str, uint16_t size){
+   for (uint16_t i = 0; i < size; i++)
+      if (str[i] != 0)
+         return false;
+   return true;
+}
+
+/* Lee el fichero 'path' y parsea su contenido dentro
+   de la matriz 'mat' */
 void ParseFile (char* path, Matriz* &mat){
    fstream file;
    char *buff2 = new char[BUFFSIZE];
@@ -57,7 +45,7 @@ void ParseFile (char* path, Matriz* &mat){
             }
             mat = new Matriz(atoi(buff2));
             size = true;
-            cout << atoi(buff2) << endl;     // DEBUG
+            //cout << atoi(buff2) << endl;     // DEBUG
             buff.clear();
             ResetChar(buff2, BUFFSIZE);
 
@@ -86,30 +74,3 @@ void ParseFile (char* path, Matriz* &mat){
       }
    }
 }
-*/
-
-int main (){
-
-    Problema* prob = new Problema(1, 14);
-
-   Nodo* node = new Nodo(1);
-   Nodo* tmp = new Nodo(2, node);
-   node->AddHijo(tmp);
-   tmp = new Nodo(3, node);
-   node->AddHijo(tmp);
-   tmp = new Nodo(8, node);
-   node->AddHijo(tmp);
-   Nodo* tmp2 = new Nodo(4, tmp);
-   tmp->AddHijo(tmp2);
-
-   node->Print();
-   node->GetHijos()->at(0)->Print();
-   node->GetHijos()->at(1)->Print();
-   node->GetHijos()->at(2)->Print();
-   tmp->GetHijos()->at(0)->Print();
-
-   //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
-
-   return 0;
-}
-

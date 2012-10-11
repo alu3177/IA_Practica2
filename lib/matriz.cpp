@@ -5,12 +5,13 @@
 using namespace std;
 
 /* CONSTRUCTOR */
-Matriz::Matriz(){
-    _dim = 4;
+/*
+Matriz::Matriz(uint8_t d = 4) : _dim(d){
     _base = (int **) calloc(_dim, sizeof(int *));
     for (uint16_t i = 0; i < _dim; i++)
-        _base[i] = (int *) calloc(_dim, sizeof(int));      
+        _base[i] = (int *) calloc(_dim, sizeof(int));
 }
+*/
 
 /* GETTER */
 // Devuelve el valor en la posición (i,j)
@@ -43,8 +44,8 @@ void Matriz::SetDim (uint8_t d){
 /* PRINT */
 // Muestra la matriz por pantalla
 void Matriz::Print (){
-    for (uint16_t i = 0; i < _dim; i++){
-        for (uint16_t j = 0; j < _dim; j++){
+    for (uint8_t i = 0; i < _dim; i++){
+        for (uint8_t j = 0; j < _dim; j++){
             cout << _base[i][j] << " ";
         }
         cout << endl;
