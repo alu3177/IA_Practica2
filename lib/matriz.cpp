@@ -6,7 +6,7 @@ using namespace std;
 
 /* CONSTRUCTOR */
 /*
-Matriz::Matriz(uint8_t d = 4) : _dim(d){
+Matriz::Matriz(uint16_t d = 4) : _dim(d){
     _base = (int **) calloc(_dim, sizeof(int *));
     for (uint16_t i = 0; i < _dim; i++)
         _base[i] = (int *) calloc(_dim, sizeof(int));
@@ -15,7 +15,7 @@ Matriz::Matriz(uint8_t d = 4) : _dim(d){
 
 /* GETTER */
 // Devuelve el valor en la posición (i,j)
-int Matriz::Get (uint8_t i, uint8_t j){
+uint32_t Matriz::Get (uint16_t i, uint16_t j){
     if ((i < _dim)&&(j < _dim))
         return _base[i][j];
     return -1;
@@ -23,7 +23,7 @@ int Matriz::Get (uint8_t i, uint8_t j){
 
 /* SETTER */
 // Establece el valor en la posición (i,j) el valor 'value'
-void Matriz::Set (uint8_t i, uint8_t j, int value){
+void Matriz::Set (uint16_t i, uint16_t j, uint32_t value){
     if ((i < _dim)&&(j < _dim))
         _base[i][j] = value;
 }
@@ -31,12 +31,12 @@ void Matriz::Set (uint8_t i, uint8_t j, int value){
 /* SETDIM */
 // Cambia el valor de "_dim" y vuelve a hacer el mapeo de memoria (si el nuevo tamaño es mayor al actual)
 // Se pierde la infomación de la matriz (si el nuevo tamaño es mayor al actual)
-void Matriz::SetDim (uint8_t d){
+void Matriz::SetDim (uint16_t d){
     if (_dim < d){
         _dim = d;
-        _base = (int **) calloc(_dim, sizeof(int *));
+        _base = (uint32_t **) calloc(_dim, sizeof(uint32_t *));
         for (uint16_t i = 0; i < _dim; i++)
-        _base[i] = (int *) calloc(_dim, sizeof(int));
+        _base[i] = (uint32_t *) calloc(_dim, sizeof(uint32_t));
     }else
     _dim = d;
 }
@@ -44,8 +44,8 @@ void Matriz::SetDim (uint8_t d){
 /* PRINT */
 // Muestra la matriz por pantalla
 void Matriz::Print (){
-    for (uint8_t i = 0; i < _dim; i++){
-        for (uint8_t j = 0; j < _dim; j++){
+    for (uint16_t i = 0; i < _dim; i++){
+        for (uint16_t j = 0; j < _dim; j++){
             cout << _base[i][j] << " ";
         }
         cout << endl;

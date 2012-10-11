@@ -22,12 +22,14 @@ class Nodo{
                     _level = _padre->GetLevel() + 1;
         }
 
+
         void AddHijo(Nodo*);
 
         /* GETTERS */
         inline uint16_t GetID(){ return _id; }
         inline uint8_t GetLevel(){ return _level; }
         inline vector<Nodo* >* GetHijos() { return &_hijos; }
+        inline Nodo* GetPadre() { return _padre; }
 
         /* OTRAS */
         void Print();

@@ -91,7 +91,22 @@ void ParseFile (char* path, Matriz* &mat){
 int main (){
 
     Problema* prob = new Problema(1, 14);
-
+    prob->BPA();
+    /*
+    Nodo* n = new Nodo(1);
+    prob->ExpandNode(n);
+    n->Print();
+    n = new Nodo(2, n);
+    prob->ExpandNode(n);
+    n->Print();
+    n = new Nodo(5, n);
+    prob->ExpandNode(n);
+    n->Print();
+    n = new Nodo(6, n);
+    prob->ExpandNode(n);
+    n->Print();
+    */
+/*
    Nodo* node = new Nodo(1);
    Nodo* tmp = new Nodo(2, node);
    node->AddHijo(tmp);
@@ -109,7 +124,7 @@ int main (){
    tmp->GetHijos()->at(0)->Print();
 
    //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
-
+*/
    return 0;
 }
 

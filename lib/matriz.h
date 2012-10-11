@@ -5,23 +5,24 @@
 class Matriz {
    // Esta clase implementa una matriz cuadrada de numeros enteros
    protected:
-        int **_base;    // Vector que almacenará la matriz
-        uint8_t _dim;  // Tamaño de la matriz
+        uint32_t **_base;    // Vector que almacenará la matriz
+        uint16_t _dim;  // Tamaño de la matriz
 
    public:
    /* CONSTRUCTOR */
       // Constructor por defecto
-        Matriz(uint8_t d = 4){
+        Matriz(uint16_t d = 4){
             _dim = d;
-            _base = (int **) calloc(_dim, sizeof(int *));
+            _base = (uint32_t **) calloc(_dim, sizeof(uint32_t *));
             for (uint16_t i = 0; i < _dim; i++)
-                _base[i] = (int *) calloc(_dim, sizeof(int));
+                _base[i] = (uint32_t *) calloc(_dim, sizeof(uint32_t));
         }
 
    /* GETTER y SETTER */
-        int Get (uint8_t i, uint8_t j);
-        void Set (uint8_t i, uint8_t j, int value);
-        void SetDim (uint8_t d);
+        uint32_t Get (uint16_t i, uint16_t j);
+        void Set (uint16_t i, uint16_t j, uint32_t value);
+        void SetDim (uint16_t d);
+        inline uint16_t GetDim () { return _dim; }
 
    /* OTRAS */
         void Print ();
