@@ -121,15 +121,14 @@ int main (){
    node->AddHijo(tmp);
    tmp = new Nodo(8, node);
    node->AddHijo(tmp);
+   Nodo* tmp2 = new Nodo(4, tmp);
+   tmp->AddHijo(tmp2);
    
    node->Print();
-   cout << endl;
    node->GetHijos()->at(0)->Print();
-   cout << endl;
    node->GetHijos()->at(1)->Print();
-   cout << endl;
    node->GetHijos()->at(2)->Print();
-   cout << endl;
+   tmp->GetHijos()->at(0)->Print();
 
    //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
    
