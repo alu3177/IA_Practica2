@@ -92,6 +92,20 @@ int main (){
 
     Problema* prob = new Problema(1, 14);
     prob->BPA();
+    prob->BPP();
+
+
+/*
+    vector<Nodo* > st;
+    Nodo* n = new Nodo(1);
+    Nodo* n1 = new Nodo(2, n);
+    Nodo* n2 = new Nodo(3, n);
+    st.push_back(n1);
+    cout << st.size() << endl;
+    cout << prob->isInVector(st, n1) << endl;
+    cout << st.size() << endl;
+*/
+
     /*
     Nodo* n = new Nodo(1);
     prob->ExpandNode(n);

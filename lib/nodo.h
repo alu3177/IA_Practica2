@@ -36,7 +36,8 @@ class Nodo{
 
         /* SOBRECARGA DE OPERADORES */
         bool operator == (Nodo &n) const{
-            cout << this->_id << " == " << n.GetID() <<  " && " << this->_padre->GetID() << " == " << n.GetPadre()->GetID() <<   " && " << this->_level << " == " << n.GetLevel() << endl;  // DEBUG
+            if (this->_padre != NULL)
+                cout << this->_id << " == " << n.GetID() <<  " && " << this->_padre->GetID() << " == " << n.GetPadre()->GetID() <<   " && " << this->_level << " == " << n.GetLevel() << endl;  // DEBUG
             return this->_id == n.GetID() && this->_padre->GetID() == n.GetPadre()->GetID() && this->_level == n.GetLevel();
         }
 
