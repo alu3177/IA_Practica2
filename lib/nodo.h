@@ -27,12 +27,19 @@ class Nodo{
 
         /* GETTERS */
         inline uint16_t GetID(){ return _id; }
-        inline uint8_t GetLevel(){ return _level; }
+        inline uint16_t GetLevel(){ return _level; }
         inline vector<Nodo* >* GetHijos() { return &_hijos; }
         inline Nodo* GetPadre() { return _padre; }
 
         /* OTRAS */
         void Print();
 
+        /* SOBRECARGA DE OPERADORES */
+        bool operator == (Nodo &n) const{
+            cout << this->_id << " == " << n.GetID() <<  " && " << this->_padre->GetID() << " == " << n.GetPadre()->GetID() <<   " && " << this->_level << " == " << n.GetLevel() << endl;  // DEBUG
+            return this->_id == n.GetID() && this->_padre->GetID() == n.GetPadre()->GetID() && this->_level == n.GetLevel();
+        }
+
 };
+
 #endif
