@@ -68,16 +68,15 @@ void ExpandNode (Nodo* &n){
     }
 }
 
-void BuildResult (Nodo* &n, uint32_t generados, uint32_t expandidos){
-    Nodo* actual = n;
-    uint32_t coste = 0;
-
-    while (actual != NULL){
-        cout << actual->GetID() << endl;    // DEBUG
-        if (actual->GetID() != _initID)
-            coste += _costMat->Get(actual->GetPadre()->GetID() -1, actual->GetID() - 1);
-        actual = actual->GetPadre();
+void BuildResult (Nodo* n, uint32_t generados, uint32_t expandidos){
+    uint16_t coste = 0;
+    while (n->GetPadre() != NULL){
+        cout << n->GetID() << "<-";
+        coste += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
+        n = n->GetPadre();
     }
+    cout << _initID << endl;
+
     cout << "Costo: " << coste << endl;
     cout << "Número de nodo generados: " << generados << endl;
     cout << "Número de nodo analizados: " << expandidos << endl;
@@ -99,7 +98,7 @@ void BPA (){
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
-            cout << "FINAL !!" << endl;     // DEBUG
+            //cout << "FINAL !!" << endl;     // DEBUG
             BuildResult(actual, nGenerados, nExpand);
         // Expandir el nodo actual
         } else {
@@ -130,6 +129,15 @@ bool isInVector (vector<Nodo* > &v, Nodo* &n){
         if (v[i] == n)
             return true;
     return false;
+}
+
+// Devuelve la posición dentro del vector del Nodo con ID = 'id'
+// Si no existe, devuelve "-1"
+int isInVector (vector<Nodo* > &v, uint16_t id){
+    for (uint16_t i = 0; i < v.size(); i++)
+        if (v[i]->GetID() == id)
+            return i;
+    return -1;
 }
 
 
@@ -173,22 +181,135 @@ void BPP (){
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
-            cout << "FINAL !!" << endl;     // DEBUG
+            //cout << "FINAL !!" << endl;     // DEBUG
             BuildResult(actual, nGenerados, nExpand);
         // Expandir el nodo actual
         } else {
-            cout << "actual " << actual->GetID() << endl;
+            //cout << "actual " << actual->GetID() << endl;   // DEBUG
+            cerrados.push_back(actual);
             ExpandNodeBPP(actual);
             nExpand++;
             for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
                 if ((!isInStack(abiertos, actual->GetHijos()->at(i))) && (!isInVector(cerrados, actual->GetHijos()->at(i)))){
                     abiertos.push(actual->GetHijos()->at(i));
-                    nGenerados++;
                 }
+                nGenerados++;
                 //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
             }
         }
     }
+}
+
+// Calcula g(n), que es el coste real del camino desde el inicio hasta 'n'
+uint16_t CalculaGn(Nodo* n){
+    uint16_t result = 0;
+    while (n->GetPadre() != NULL){
+        result += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
+        n = n->GetPadre();
+    }
+    return result;
+}
+
+/* Calcula y almacena el valor de la función de coste estimado:
+ * f(n) = g(n) + h(n)
+ * Donde:
+ * g(n) es el coste real del camino desde el inicio hasta 'n'
+ * h(n) es el valor estimado de coste desde 'n' hasta el nodo final
+ *
+ * Devuelve el valor generado y almacernado en el nodo 'n'
+ */
+uint16_t CalculaFn (Nodo* &n){
+    n->SetFn(CalculaGn(n) + _heuMat->Get(n->GetID() - 1, _endID - 1));
+    return (n->GetFn());
+}
+
+// Inserta en Orden (en función del valor f(n)) de menor (índice 0) a mayor.
+void InsertarOrden(vector<Nodo* > &v, Nodo* &n){
+    vector<Nodo* >::iterator it = v.begin();
+    for (uint16_t i = 0; i < v.size(); i++){
+        if (i == 0){  // Manejo del primer elemento
+            if (v[i]->GetFn() > n->GetFn()){
+                break;
+            } else {
+                continue;
+            }
+            // Manejo inserción "en medio"
+        }else if ((v[i - 1]->GetFn() < n->GetFn()) && (n->GetFn() <= v[i]->GetFn())){
+            it++;
+            break;
+            // Manejo del último elemento
+        }else if (i == v.size() - 1)
+            it++;
+        it++;
+    }
+    v.insert(it, n);
+}
+
+/* BÚSQUEDA A* */
+void BAE (){
+    vector<Nodo* > abiertos;  // Array con punteros a nodos abiertos sin expandir
+    vector<Nodo* > cerrados;  // Array de punteros a nodos cerrados (no son el final)
+    uint32_t nGenerados = 1;  // Número de nodos generados
+    uint32_t nExpand = 1;     // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
+    bool finish = false;
+    Nodo* n = new Nodo(_initID);    // Puntero para añadir nuevos nodos
+                                    // Inicializado al nodo raíz
+    Nodo* actual;   // Puntero al nodo actual
+
+    abiertos.push_back(n);
+    while ((abiertos.size() > 0) && (!finish)){
+        actual = abiertos.front(); abiertos.erase(abiertos.begin()); // Leemos el HEAD y lo extraemos
+
+        // Si encontramos el NODO FINAL
+        if (actual->GetID() == _endID){
+            finish = true;
+            //cout << "FINAL !!" << endl;     // DEBUG
+            BuildResult(actual, nGenerados, nExpand);
+        // Expandir el nodo actual
+        } else {
+            //cout << "actual " << actual->GetID() << endl;   // DEBUG
+            cerrados.push_back(actual);
+            ExpandNode(actual);
+            nExpand++;
+            for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
+                int posHijoA = isInVector(abiertos, actual->GetHijos()->at(i)->GetID()); // Obtenemos la posición dentro del vector de ABIERTOS
+                if (posHijoA > -1){ // Está en el vector de abiertos
+                    // El valor g(n) del nodo en abiertos es peor (mayor) que
+                    // el del nodo dentro del vector de hijos de 'actual'
+                    if (CalculaGn(abiertos[posHijoA]) > CalculaGn(actual->GetHijos()->at(i))){
+                        abiertos[posHijoA]->SetPadre(actual);    // Cambiamos el padre
+                        CalculaFn(abiertos[posHijoA]);   // Recalculamos f(n)
+                    }/*else  // DEBUG
+                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Abiertos, pero es peor" << endl;   // DEBUG
+                    */
+                }
+                int posHijoC = isInVector(cerrados, actual->GetHijos()->at(i)->GetID()); // Obtenemos la posición dentro del vector de CERRADOS
+                if (posHijoC > -1){  // Está en el vector de cerrados
+                    // El valor g(n) del nodo en cerrados es peor (mayor) que
+                    // el del nodo dentro del vector de hijos de 'actual'
+                    if (CalculaGn(cerrados[posHijoC]) > CalculaGn(actual->GetHijos()->at(i))){
+                        cerrados[posHijoC]->SetPadre(actual);    // Cambiamos el padre
+                        CalculaFn(cerrados[posHijoC]);
+                    }/*else  // DEBUG
+                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Cerrados, pero es peor" << endl;   // DEBUG
+                    */
+                }
+                if ((posHijoA == -1)&&(posHijoC == -1)){
+                    CalculaFn(actual->GetHijos()->at(i));
+                    InsertarOrden(abiertos, actual->GetHijos()->at(i));
+                    /*
+                    cout << "Insertando " << actual->GetHijos()->at(i)->GetID() << " en abiertos" << endl; // DEBUG
+                    for (int i = 0; i < abiertos.size(); i++){
+                        cout << abiertos[i]->GetID() << " [" << abiertos[i]->GetFn() << "]." << endl;
+                    }
+                    */
+                }
+                nGenerados++;
+                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
+            }
+        }
+    }
+
 }
 
 };

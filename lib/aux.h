@@ -74,3 +74,12 @@ void ParseFile (char* path, Matriz* &mat){
       }
    }
 }
+
+        ostream& operator << (ostream &o,Nodo* &n){
+            o << n->GetID();
+            return o;
+        }
+        ostream& operator << (ostream &o,Nodo &n){
+            o << n.GetID();
+            return o;
+        }

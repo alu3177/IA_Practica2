@@ -91,35 +91,87 @@ void ParseFile (char* path, Matriz* &mat){
 int main (){
 
     Problema* prob = new Problema(1, 14);
+    cout << "Búsqueda Primero en Anchura" << endl;
     prob->BPA();
+    cout << endl << "Búsqueda Primero en Profundidad" << endl;
     prob->BPP();
+    cout << endl << "Búsqueda A*" << endl;
+    prob->BAE();
 
+/*
+    Nodo n1(1);
+    Nodo n2(2, &n1);
+    Nodo n3(3, &n1);
+
+    n1.SetFn(9);
+    n2.SetFn(7);
+    n3.SetFn(8);
+
+    list<Nodo > lst;
+    lst.push_back(n3);
+    lst.push_back(n2);
+    lst.push_back(n1);
+    lst.push_back(n3);
+
+    list<Nodo >::iterator it;
+    for (it = lst.begin(); it != lst.end(); ++it)
+        cout << *it << " ";
+    cout << endl;
+
+    lst.sort();
+
+    for (it = lst.begin(); it != lst.end(); ++it)
+        cout << *it << " ";
+    cout << endl;
+*/
 
 /*
     vector<Nodo* > st;
     Nodo* n = new Nodo(1);
     Nodo* n1 = new Nodo(2, n);
     Nodo* n2 = new Nodo(3, n);
+
+    n->SetFn(30);
+    n1->SetFn(75);
+    n2->SetFn(105);
+
+    st.push_back(n);
     st.push_back(n1);
+    st.push_back(n2);
+
+    for (int i = 0; i < st.size(); i++){
+        cout << st[i]->GetID() << " [" << st[i]->GetFn() << "]." << endl << "###########" << endl;
+    }
+
+    n2 = new Nodo(4, n);
+    n2->SetFn(10);
+    prob->InsertarOrden(st, n2);
+    n2 = new Nodo(5, n);
+    n2->SetFn(70);
+    prob->InsertarOrden(st, n2);
+    n2 = new Nodo(6, n);
+    n2->SetFn(25);
+    prob->InsertarOrden(st, n2);
+    n2 = new Nodo(7, n);
+    n2->SetFn(110);
+    prob->InsertarOrden(st, n2);
+    n2 = new Nodo(8, n);
+    n2->SetFn(75);
+    prob->InsertarOrden(st, n2);
+
+    for (int i = 0; i < st.size(); i++){
+        cout << st[i]->GetID() << " [" << st[i]->GetFn() << "]." << endl;
+    }
+*/
+
+
+/*
     cout << st.size() << endl;
     cout << prob->isInVector(st, n1) << endl;
     cout << st.size() << endl;
 */
 
-    /*
-    Nodo* n = new Nodo(1);
-    prob->ExpandNode(n);
-    n->Print();
-    n = new Nodo(2, n);
-    prob->ExpandNode(n);
-    n->Print();
-    n = new Nodo(5, n);
-    prob->ExpandNode(n);
-    n->Print();
-    n = new Nodo(6, n);
-    prob->ExpandNode(n);
-    n->Print();
-    */
+
 /*
    Nodo* node = new Nodo(1);
    Nodo* tmp = new Nodo(2, node);
@@ -137,8 +189,10 @@ int main (){
    node->GetHijos()->at(2)->Print();
    tmp->GetHijos()->at(0)->Print();
 
-   //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
+    cout << "f(4): " << prob->CalculaFn(tmp2) << endl;
 */
+   //cout << sizeof(Nodo*) << ", " << sizeof(uint16_t) << endl;
+
    return 0;
 }
 
