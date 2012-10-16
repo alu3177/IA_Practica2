@@ -1,21 +1,28 @@
 #include <stdlib.h>
+#include <iostream>
 #include <queue>
 #include <stack>
 #include <vector>
+#include <string>
 
 #include "matriz.h"
 #include "nodo.h"
-#include "aux.h"
 
 using namespace std;
+
+extern void ParseFile (const char* path, Matriz* &mat);
+extern bool isInStack (stack<Nodo* > s, Nodo* &n);
+extern bool isInVector (vector<Nodo* > &v, Nodo* &n);
+extern int isInVector (vector<Nodo* > &v, uint16_t id);
+extern void InsertarOrden(vector<Nodo* > &v, Nodo* &n);
 
 #ifndef PROBLEMA_H
 #define PROBLEMA_H
 
 // Rutas a los ficheros de matriz por defecto
-char* DEFAULT_ADY_MATRIX = "datos/MatrizAdyacencia.txt";
-char* DEFAULT_COST_MATRIX = "datos/MatrizCostos.txt";
-char* DEFAULT_HEU_MATRIX = "datos/MatrizEvaluacionHeuristica.txt";
+const string DEFAULT_ADY_MATRIX = "datos/MatrizAdyacencia.txt";
+const string DEFAULT_COST_MATRIX = "datos/MatrizCostos.txt";
+const string DEFAULT_HEU_MATRIX = "datos/MatrizEvaluacionHeuristica.txt";
 
 class Problema{
     private:
@@ -28,45 +35,27 @@ class Problema{
             un puntero; puesto que el tipo de dato
             uint16_t ocupa la mitad en memoria que Nodo* */
     public:
-        Problema (uint16_t init = 0, uint16_t end = 0, char* adyPath = DEFAULT_ADY_MATRIX, char* costPath = DEFAULT_COST_MATRIX, char* heuPath = DEFAULT_HEU_MATRIX) : _initID(init), _endID(end){
+        Problema (uint16_t init = 0, uint16_t end = 0, const char* adyPath = DEFAULT_ADY_MATRIX.data(), const char* costPath = DEFAULT_COST_MATRIX.data(), const char* heuPath = DEFAULT_HEU_MATRIX.data()) : _initID(init), _endID(end){
             LoadAdy(adyPath);
             LoadCost(costPath);
             LoadHeu(heuPath);
-
-            /*
-            // DEBUG
-                _adyMat->Print();
-                _costMat->Print();
-                _heuMat->Print();
-            */
         }
 
         /* FUNCIONES DE CARGA DE MATRICES */
-        inline void LoadAdy (char* path = DEFAULT_ADY_MATRIX) { ParseFile(path, _adyMat); }
-        inline void LoadCost (char* path = DEFAULT_COST_MATRIX) { ParseFile(path, _costMat); }
-        inline void LoadHeu (char* path = DEFAULT_HEU_MATRIX) { ParseFile(path, _heuMat); }
+        inline void LoadAdy (const char* path = DEFAULT_ADY_MATRIX.data()) { ParseFile(path, _adyMat); }
+        inline void LoadCost (const char* path = DEFAULT_COST_MATRIX.data()) { ParseFile(path, _costMat); }
+        inline void LoadHeu (const char* path = DEFAULT_HEU_MATRIX.data()) { ParseFile(path, _heuMat); }
 
-// Expande el nodo n
-void ExpandNode (Nodo* &n){
-    uint16_t fila = n->GetID() - 1; // Obtenemos el numero de fila en la matriz
-                                    //(Los nodos comienzan la numeración en 1 y las filas de la matriz en 0)
-    Nodo* child;    // Puntero usado para añadir hijos
-    for (uint16_t j = 0; j < _adyMat->GetDim(); j++){
-        if (_adyMat->Get(fila, j) == 1){
-            // Si NO ES nodo Raíz
-            if (n->GetID() != _initID){
-                if ((n->GetPadre()->GetID() != j + 1) && (j + 1 != _initID)){ // No añadimos el nodo padre a los hijos
-                    child = new Nodo(j + 1, n);
-                    n->AddHijo(child);
-                }
-            // Si ES nodo raíz
-            } else {
-                child = new Nodo(j + 1, n);
-                n->AddHijo(child);
-            }
-        }
-    }
-}
+        /* FUNCIONES DE MANEJO DE NODOS */
+        void ExpandNode (Nodo* &n); // Expande el nodo n
+        void ExpandNodeInverse (Nodo* &n); // Expande el nodo n generando los hijos en orden inverso (de mayor a menor ID)
+        uint16_t CalculaGn(Nodo* n);
+        uint16_t CalculaFn (Nodo* &n);
+
+        /* ALGORITMOS DE BÚSQUEDA */
+        void BPA (); // Búsqueda Primero en Anchura
+        void BPP (); // Búsqueda Primero en Profundidad
+        void BAE (); // Búsqueda A*
 
 void BuildResult (Nodo* n, uint32_t generados, uint32_t expandidos){
     uint16_t coste = 0;
@@ -82,235 +71,6 @@ void BuildResult (Nodo* n, uint32_t generados, uint32_t expandidos){
     cout << "Número de nodo analizados: " << expandidos << endl;
 }
 
-/* BÚSQUEDA PRIMERO EN ANCHURA */
-void BPA (){
-    queue<Nodo*> abiertos;  // Cola con los nodos abiertos sin expandir
-    uint32_t nGenerados = 1; // Número de nodos generados
-    uint32_t nExpand = 1;    // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
-    bool finish = false;
-    Nodo* n = new Nodo(_initID);    // Puntero para añadir nuevos nodos
-                                    // Inicializado al nodo raíz
-    Nodo* actual;   // Puntero al nodo actual
-
-    abiertos.push(n);
-    while ((abiertos.size() > 0) && (!finish)){
-        actual = abiertos.front(); abiertos.pop(); // Leemos el HEAD y lo extraemos
-        // Si encontramos el NODO FINAL
-        if (actual->GetID() == _endID){
-            finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
-        // Expandir el nodo actual
-        } else {
-            ExpandNode(actual);
-            nExpand++;
-            for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
-                abiertos.push(actual->GetHijos()->at(i));
-                nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
-            }
-        }
-        //cout << "Abiertos.Size = " << abiertos.size() << endl; // DEBUG
-    }
-}
-
-
-bool isInStack (stack<Nodo* > s, Nodo* &n){
-    while (s.size() > 0){
-        if (s.top() == n)
-            return true;
-        s.pop();
-    }
-    return false;
-}
-
-bool isInVector (vector<Nodo* > &v, Nodo* &n){
-    for (uint16_t i = 0; i < v.size(); i++)
-        if (v[i] == n)
-            return true;
-    return false;
-}
-
-// Devuelve la posición dentro del vector del Nodo con ID = 'id'
-// Si no existe, devuelve "-1"
-int isInVector (vector<Nodo* > &v, uint16_t id){
-    for (uint16_t i = 0; i < v.size(); i++)
-        if (v[i]->GetID() == id)
-            return i;
-    return -1;
-}
-
-
-void ExpandNodeBPP (Nodo* &n){
-    uint16_t fila = n->GetID() - 1; // Obtenemos el numero de fila en la matriz
-                                    //(Los nodos comienzan la numeración en 1 y las filas de la matriz en 0)
-    Nodo* child;    // Puntero usado para añadir hijos
-
-    //for (uint16_t j = 0; j < _adyMat->GetDim(); j++){
-    for (uint16_t j = _adyMat->GetDim() - 1; j > 0; j--){
-        if (_adyMat->Get(fila, j) == 1){
-            // Si NO ES nodo Raíz
-            if (n->GetID() != _initID){
-                if ((n->GetPadre()->GetID() != j + 1) && (j + 1 != _initID)){ // No añadimos el nodo padre a los hijos
-                    child = new Nodo(j + 1, n);
-                    n->AddHijo(child);
-                }
-            // Si ES nodo raíz
-            } else {
-                child = new Nodo(j + 1, n);
-                n->AddHijo(child);
-            }
-        }
-    }
-}
-
-/* BÚSQUEDA PRIMERO EN PROFUNDIDAD */
-void BPP (){
-    stack<Nodo* > abiertos;  // Pila con punteros a nodos abiertos sin expandir
-    vector<Nodo* > cerrados; // Array de punteros a nodos cerrados (no son el final)
-    uint32_t nGenerados = 1; // Número de nodos generados
-    uint32_t nExpand = 1;    // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
-    bool finish = false;
-    Nodo* n = new Nodo(_initID);    // Puntero para añadir nuevos nodos
-                                    // Inicializado al nodo raíz
-    Nodo* actual;   // Puntero al nodo actual
-
-    abiertos.push(n);
-    while ((abiertos.size() > 0) && (!finish)){
-        actual = abiertos.top(); abiertos.pop(); // Leemos el HEAD y lo extraemos
-        // Si encontramos el NODO FINAL
-        if (actual->GetID() == _endID){
-            finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
-        // Expandir el nodo actual
-        } else {
-            //cout << "actual " << actual->GetID() << endl;   // DEBUG
-            cerrados.push_back(actual);
-            ExpandNodeBPP(actual);
-            nExpand++;
-            for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
-                if ((!isInStack(abiertos, actual->GetHijos()->at(i))) && (!isInVector(cerrados, actual->GetHijos()->at(i)))){
-                    abiertos.push(actual->GetHijos()->at(i));
-                }
-                nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
-            }
-        }
-    }
-}
-
-// Calcula g(n), que es el coste real del camino desde el inicio hasta 'n'
-uint16_t CalculaGn(Nodo* n){
-    uint16_t result = 0;
-    while (n->GetPadre() != NULL){
-        result += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
-        n = n->GetPadre();
-    }
-    return result;
-}
-
-/* Calcula y almacena el valor de la función de coste estimado:
- * f(n) = g(n) + h(n)
- * Donde:
- * g(n) es el coste real del camino desde el inicio hasta 'n'
- * h(n) es el valor estimado de coste desde 'n' hasta el nodo final
- *
- * Devuelve el valor generado y almacernado en el nodo 'n'
- */
-uint16_t CalculaFn (Nodo* &n){
-    n->SetFn(CalculaGn(n) + _heuMat->Get(n->GetID() - 1, _endID - 1));
-    return (n->GetFn());
-}
-
-// Inserta en Orden (en función del valor f(n)) de menor (índice 0) a mayor.
-void InsertarOrden(vector<Nodo* > &v, Nodo* &n){
-    vector<Nodo* >::iterator it = v.begin();
-    for (uint16_t i = 0; i < v.size(); i++){
-        if (i == 0){  // Manejo del primer elemento
-            if (v[i]->GetFn() > n->GetFn()){
-                break;
-            } else {
-                continue;
-            }
-            // Manejo inserción "en medio"
-        }else if ((v[i - 1]->GetFn() < n->GetFn()) && (n->GetFn() <= v[i]->GetFn())){
-            it++;
-            break;
-            // Manejo del último elemento
-        }else if (i == v.size() - 1)
-            it++;
-        it++;
-    }
-    v.insert(it, n);
-}
-
-/* BÚSQUEDA A* */
-void BAE (){
-    vector<Nodo* > abiertos;  // Array con punteros a nodos abiertos sin expandir
-    vector<Nodo* > cerrados;  // Array de punteros a nodos cerrados (no son el final)
-    uint32_t nGenerados = 1;  // Número de nodos generados
-    uint32_t nExpand = 1;     // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
-    bool finish = false;
-    Nodo* n = new Nodo(_initID);    // Puntero para añadir nuevos nodos
-                                    // Inicializado al nodo raíz
-    Nodo* actual;   // Puntero al nodo actual
-
-    abiertos.push_back(n);
-    while ((abiertos.size() > 0) && (!finish)){
-        actual = abiertos.front(); abiertos.erase(abiertos.begin()); // Leemos el HEAD y lo extraemos
-
-        // Si encontramos el NODO FINAL
-        if (actual->GetID() == _endID){
-            finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
-        // Expandir el nodo actual
-        } else {
-            //cout << "actual " << actual->GetID() << endl;   // DEBUG
-            cerrados.push_back(actual);
-            ExpandNode(actual);
-            nExpand++;
-            for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
-                int posHijoA = isInVector(abiertos, actual->GetHijos()->at(i)->GetID()); // Obtenemos la posición dentro del vector de ABIERTOS
-                if (posHijoA > -1){ // Está en el vector de abiertos
-                    // El valor g(n) del nodo en abiertos es peor (mayor) que
-                    // el del nodo dentro del vector de hijos de 'actual'
-                    if (CalculaGn(abiertos[posHijoA]) > CalculaGn(actual->GetHijos()->at(i))){
-                        abiertos[posHijoA]->SetPadre(actual);    // Cambiamos el padre
-                        CalculaFn(abiertos[posHijoA]);   // Recalculamos f(n)
-                    }/*else  // DEBUG
-                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Abiertos, pero es peor" << endl;   // DEBUG
-                    */
-                }
-                int posHijoC = isInVector(cerrados, actual->GetHijos()->at(i)->GetID()); // Obtenemos la posición dentro del vector de CERRADOS
-                if (posHijoC > -1){  // Está en el vector de cerrados
-                    // El valor g(n) del nodo en cerrados es peor (mayor) que
-                    // el del nodo dentro del vector de hijos de 'actual'
-                    if (CalculaGn(cerrados[posHijoC]) > CalculaGn(actual->GetHijos()->at(i))){
-                        cerrados[posHijoC]->SetPadre(actual);    // Cambiamos el padre
-                        CalculaFn(cerrados[posHijoC]);
-                    }/*else  // DEBUG
-                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Cerrados, pero es peor" << endl;   // DEBUG
-                    */
-                }
-                if ((posHijoA == -1)&&(posHijoC == -1)){
-                    CalculaFn(actual->GetHijos()->at(i));
-                    InsertarOrden(abiertos, actual->GetHijos()->at(i));
-                    /*
-                    cout << "Insertando " << actual->GetHijos()->at(i)->GetID() << " en abiertos" << endl; // DEBUG
-                    for (int i = 0; i < abiertos.size(); i++){
-                        cout << abiertos[i]->GetID() << " [" << abiertos[i]->GetFn() << "]." << endl;
-                    }
-                    */
-                }
-                nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
-            }
-        }
-    }
-
-}
 
 };
 
