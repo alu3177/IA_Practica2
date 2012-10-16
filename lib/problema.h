@@ -7,6 +7,7 @@
 
 #include "matriz.h"
 #include "nodo.h"
+#include "solucion.h"
 
 using namespace std;
 
@@ -58,17 +59,9 @@ class Problema{
         void BAE (); // Búsqueda A*
 
 void BuildResult (Nodo* n, uint32_t generados, uint32_t expandidos){
-    uint16_t coste = 0;
-    while (n->GetPadre() != NULL){
-        cout << n->GetID() << "<-";
-        coste += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
-        n = n->GetPadre();
-    }
-    cout << _initID << endl;
-
-    cout << "Costo: " << coste << endl;
-    cout << "Número de nodo generados: " << generados << endl;
-    cout << "Número de nodo analizados: " << expandidos << endl;
+    Solucion sol(n, generados, expandidos, _initID);
+    //sol.Generar();
+    cout << sol << endl;
 }
 
 
