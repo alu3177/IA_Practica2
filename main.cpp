@@ -1,35 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-
-#include "lib/matriz.h"
-#include "lib/problema.h"
-
 /*
-   + Tres ficheros, uno para cada matriz (adyacencia, costos y heurística)
+ * Inteligencia Artificial - Práctica 2: Algoritmos de búsqueda
+ *
+ * AUTOR: Fernando González López-Peñalver (alu3177)
+ * EMAIL: alu0100256543@ull.edu.es
+ *
+ * Fecha de entrega: 18 - Octubre - 2012
+ *
+ * Descripción:
+ *      Se obtienen los datos desde tres ficheros (matriz de adyacencia,
+ *      matriz de costos y matriz de evaluaciones heurísticas) para
+ *      ejecutar tres algoritmos de búsqueda:
+ *          - Búsqueda Primero en Amplitud      (no informada)
+ *          - Búsqueda Primero en Profundidad   (no informada)
+ *          - Búsqueda A*                       (infomada)
+ */
 
-   + Fichero de valores Heurísticos:
-
-      Es una matriz con estimaciones de las distancias.
-      Matriz heurística
-
-      4
-      0 1 2 2
-      pesos pesos pesos estimados
-
-
-
-
-   + Los vértices de cada nivel de un árbol van ordenados segun su número, para mantener el orden de las búsquedas.
-
-   + Debe preguntar al user los vértices inicial y final.
-   + Como salida => El salido encontrado (con cada búsqueda) y cuantos nodos se han explorado.
-*/
-
-using namespace std;
+#include "lib/problema.h"
 
 int main (){
     while (1){

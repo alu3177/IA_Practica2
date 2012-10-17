@@ -1,3 +1,20 @@
+/*
+ * Inteligencia Artificial - Práctica 2: Algoritmos de búsqueda
+ *
+ * AUTOR: Fernando González López-Peñalver (alu3177)
+ * EMAIL: alu0100256543@ull.edu.es
+ *
+ * Fecha de entrega: 18 - Octubre - 2012
+ *
+ * Descripción:
+ *      Se obtienen los datos desde tres ficheros (matriz de adyacencia,
+ *      matriz de costos y matriz de evaluaciones heurísticas) para
+ *      ejecutar tres algoritmos de búsqueda:
+ *          - Búsqueda Primero en Amplitud      (no informada)
+ *          - Búsqueda Primero en Profundidad   (no informada)
+ *          - Búsqueda A*                       (infomada)
+ */
+
 #include "aux.h"
 #include "problema.h"
 
@@ -27,31 +44,6 @@ void Problema::ExpandNode (Nodo* &n){
     }
 }
 
-// Expande el nodo n, pero almacena los hijos alrevés (de mayor a menor ID)
-void Problema::ExpandNodeInverse (Nodo* &n){
-    uint16_t fila = n->GetID() - 1; // Obtenemos el numero de fila en la matriz
-                                    //(Los nodos comienzan la numeración en 1 y las filas de la matriz en 0)
-    Nodo* child;    // Puntero usado para añadir hijos
-
-    uint16_t dim = _adyMat->GetDim();
-    for (uint16_t j = 0; j < dim; j++){
-    //for (uint16_t j = _adyMat->GetDim() - 1; j > 0; j--){
-        if (_adyMat->Get(fila, dim - j) == 1){
-            // Si NO ES nodo Raíz
-            if (n->GetID() != _initID){
-                if ((n->GetPadre()->GetID() != dim - j) && (dim - j != _initID)){ // No añadimos el nodo padre a los hijos
-                    child = new Nodo(dim - j, n);
-                    n->AddHijo(child);
-                }
-            // Si ES nodo raíz
-            } else {
-                child = new Nodo(dim - j, n);
-                n->AddHijo(child);
-            }
-        }
-    }
-}
-
 // Calcula g(n), que es el coste real del camino desde el inicio hasta 'n'
 uint16_t Problema::CalculaGn(Nodo* n){
     uint16_t result = 0;
@@ -75,9 +67,9 @@ uint16_t Problema::CalculaFn (Nodo* &n){
     return (n->GetFn());
 }
 
-/* ***********************
- * Algoritmos de búsqueda *
- * ***********************/
+/* ****************************************************
+ * Métodos que implementan los algoritmos de búsqueda *
+ * ****************************************************/
 
 /* BÚSQUEDA PRIMERO EN ANCHURA */
 Solucion* Problema::BPA(){
@@ -139,26 +131,22 @@ Solucion* Problema::BPP(){
         // Expandir el nodo actual
         } else {
             cerrados.push_back(actual);
-            ExpandNodeInverse(actual);
+            ExpandNode(actual);
             nExpand++;
-            for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
+            for (uint16_t i = actual->GetHijos()->size(); i > 0; i--){
 
-                if ((!isInStack(abiertos, actual->GetHijos()->at(i))) && (!isInVector(cerrados, actual->GetHijos()->at(i)))){
-                    abiertos.push(actual->GetHijos()->at(i));
-                    cout << "PUSH : " << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
+                if ((!isInStack(abiertos, actual->GetHijos()->at(i - 1))) && (!isInVector(cerrados, actual->GetHijos()->at(i - 1)))){
+                    abiertos.push(actual->GetHijos()->at(i - 1));
+                    //cout << "PUSH : " << actual->GetHijos()->at(i - 1)->GetID() << endl; // DEBUG
                 }
                 //cout << abiertos.size() << endl;    // DEBUG
                 nGenerados++;
-                //cout << "Hijo[" << i << "] = " << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
+                //cout << "Hijo[" << i - 1 << "] = " << actual->GetHijos()->at(i - 1)->GetID() << endl; // DEBUG
             }
         }
     }
     return NULL;
 }
-
-/* ****************************************************
- * Métodos que implementan los algoritmos de búsqueda *
- * ****************************************************/
 
 /* BÚSQUEDA A* */
 Solucion* Problema::BAE(){

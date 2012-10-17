@@ -1,19 +1,16 @@
 /*
-#include "solucion.h"
-
-using namespace std;
-
-ostream &operator<<(ostream& s,const Solucion &sol){
-    Nodo* n = sol._nSol;
-    if (n != NULL){
-        while (n->GetPadre() != NULL){
-            cout << n->GetID() << "<-";
-        }
-        cout << sol._nSol->GetID() << endl;
-    }
-    s << "Costo: " << sol._costo << endl;
-    s << "Número de nodo generados: " << sol._nGenerados << endl;
-    s << "Número de nodo analizados: " << sol._nVisitados;
-    return s;
-}
-*/
+ * Inteligencia Artificial - Práctica 2: Algoritmos de búsqueda
+ *
+ * AUTOR: Fernando González López-Peñalver (alu3177)
+ * EMAIL: alu0100256543@ull.edu.es
+ *
+ * Fecha de entrega: 18 - Octubre - 2012
+ *
+ * Descripción:
+ *      Se obtienen los datos desde tres ficheros (matriz de adyacencia,
+ *      matriz de costos y matriz de evaluaciones heurísticas) para
+ *      ejecutar tres algoritmos de búsqueda:
+ *          - Búsqueda Primero en Amplitud      (no informada)
+ *          - Búsqueda Primero en Profundidad   (no informada)
+ *          - Búsqueda A*                       (infomada)
+ */
