@@ -73,7 +73,7 @@ uint16_t Problema::CalculaFn (Nodo* &n){
 
 /* BÚSQUEDA PRIMERO EN ANCHURA */
 Solucion* Problema::BPA(){
-    queue<Nodo*> abiertos;  // Cola con los nodos abiertos sin expandir
+    queue<Nodo*> abiertos;   // Cola con los nodos abiertos sin expandir
     uint32_t nGenerados = 1; // Número de nodos generados
     uint32_t nExpand = 1;    // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
     bool finish = false;
@@ -87,8 +87,6 @@ Solucion* Problema::BPA(){
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            //BuildResult(actual, nGenerados, nExpand);
             Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
             return sol;
         // Expandir el nodo actual
@@ -98,10 +96,8 @@ Solucion* Problema::BPA(){
             for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
                 abiertos.push(actual->GetHijos()->at(i));
                 nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
             }
         }
-        //cout << "Abiertos.Size = " << abiertos.size() << endl; // DEBUG
     }
     return NULL;
 }
@@ -120,12 +116,9 @@ Solucion* Problema::BPP(){
     abiertos.push(n);
     while ((abiertos.size() > 0) && (!finish)){
         actual = abiertos.top(); abiertos.pop(); // Leemos el HEAD y lo extraemos
-        //cout << "actual " << actual->GetID() << endl;   // DEBUG
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            //BuildResult(actual, nGenerados, nExpand);
             Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
             return sol;
         // Expandir el nodo actual
@@ -137,11 +130,8 @@ Solucion* Problema::BPP(){
 
                 if ((!isInStack(abiertos, actual->GetHijos()->at(i - 1))) && (!isInVector(cerrados, actual->GetHijos()->at(i - 1)))){
                     abiertos.push(actual->GetHijos()->at(i - 1));
-                    //cout << "PUSH : " << actual->GetHijos()->at(i - 1)->GetID() << endl; // DEBUG
                 }
-                //cout << abiertos.size() << endl;    // DEBUG
                 nGenerados++;
-                //cout << "Hijo[" << i - 1 << "] = " << actual->GetHijos()->at(i - 1)->GetID() << endl; // DEBUG
             }
         }
     }
@@ -166,13 +156,10 @@ Solucion* Problema::BAE(){
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
-            //cout << "FINAL !!" << endl;     // DEBUG
-            //BuildResult(actual, nGenerados, nExpand);
             Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
             return sol;
         // Expandir el nodo actual
         } else {
-            //cout << "actual " << actual->GetID() << endl;   // DEBUG
             cerrados.push_back(actual);
             ExpandNode(actual);
             nExpand++;
@@ -184,9 +171,7 @@ Solucion* Problema::BAE(){
                     if (CalculaGn(abiertos[posHijoA]) > CalculaGn(actual->GetHijos()->at(i))){
                         abiertos[posHijoA]->SetPadre(actual);    // Cambiamos el padre
                         CalculaFn(abiertos[posHijoA]);   // Recalculamos f(n)
-                    }/*else  // DEBUG
-                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Abiertos, pero es peor" << endl;   // DEBUG
-                    */
+                    }
                 }
                 int posHijoC = isInVector(cerrados, actual->GetHijos()->at(i)->GetID()); // Obtenemos la posición dentro del vector de CERRADOS
                 if (posHijoC > -1){  // Está en el vector de cerrados
@@ -195,22 +180,13 @@ Solucion* Problema::BAE(){
                     if (CalculaGn(cerrados[posHijoC]) > CalculaGn(actual->GetHijos()->at(i))){
                         cerrados[posHijoC]->SetPadre(actual);    // Cambiamos el padre
                         CalculaFn(cerrados[posHijoC]);
-                    }/*else  // DEBUG
-                        cout << actual->GetHijos()->at(i)->GetID() << " Está en Cerrados, pero es peor" << endl;   // DEBUG
-                    */
+                    }
                 }
                 if ((posHijoA == -1)&&(posHijoC == -1)){
                     CalculaFn(actual->GetHijos()->at(i));
                     InsertarOrden(abiertos, actual->GetHijos()->at(i));
-                    /*
-                    cout << "Insertando " << actual->GetHijos()->at(i)->GetID() << " en abiertos" << endl; // DEBUG
-                    for (int i = 0; i < abiertos.size(); i++){
-                        cout << abiertos[i]->GetID() << " [" << abiertos[i]->GetFn() << "]." << endl;
-                    }
-                    */
                 }
                 nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
             }
         }
     }

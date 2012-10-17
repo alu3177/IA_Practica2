@@ -21,6 +21,7 @@ int main (){
     while (1){
         system("clear");
         cout << "(Para salir introduzca un número negativo como nodo inicial)" << endl;
+        // Obtención de nodos (inicio y final)
         int inicio, final;
         cout << "Nodo de inicio: ";
         cin >> inicio;
@@ -29,16 +30,17 @@ int main (){
         cout << "Nodo final: ";
         cin >> final;
 
+        // Ejecución (y resultados) de los algoritmos
         Problema* prob = new Problema(inicio, final);
-        Solucion* sol = prob->BPA();
+        Solucion* sol = prob->BPA(); // BPA
         if (sol != NULL)
             cout << "Búsqueda Primero en Anchura" << endl << *sol << endl;
 
-        sol = prob->BPP();
+        sol = prob->BPP();           // BPP
         if (sol != NULL)
             cout << endl << "Búsqueda Primero en Profundidad" << endl << *sol << endl;
 
-        sol = prob->BAE();
+        sol = prob->BAE();           // BAE
         if (sol != NULL)
             cout << endl << "Búsqueda A*" << endl << *sol << endl;
 

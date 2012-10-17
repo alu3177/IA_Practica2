@@ -52,12 +52,6 @@ class Problema{
         /* He optado por utilizar las IDs en lugar de
             un puntero; puesto que el tipo de dato
             uint16_t ocupa la mitad en memoria que Nodo* */
-    public:
-        Problema (uint16_t init = 0, uint16_t end = 0, const char* adyPath = DEFAULT_ADY_MATRIX.data(), const char* costPath = DEFAULT_COST_MATRIX.data(), const char* heuPath = DEFAULT_HEU_MATRIX.data()) : _initID(init), _endID(end){
-            LoadAdy(adyPath);
-            LoadCost(costPath);
-            LoadHeu(heuPath);
-        }
 
         /* FUNCIONES DE CARGA DE MATRICES */
         inline void LoadAdy (const char* path = DEFAULT_ADY_MATRIX.data()) { ParseFile(path, _adyMat); }
@@ -69,6 +63,13 @@ class Problema{
         void ExpandNodeInverse (Nodo* &n); // Expande el nodo n generando los hijos en orden inverso (de mayor a menor ID)
         uint16_t CalculaGn(Nodo* n);
         uint16_t CalculaFn (Nodo* &n);
+
+    public:
+        Problema (uint16_t init = 0, uint16_t end = 0, const char* adyPath = DEFAULT_ADY_MATRIX.data(), const char* costPath = DEFAULT_COST_MATRIX.data(), const char* heuPath = DEFAULT_HEU_MATRIX.data()) : _initID(init), _endID(end){
+            LoadAdy(adyPath);
+            LoadCost(costPath);
+            LoadHeu(heuPath);
+        }
 
         /* ALGORITMOS DE BÚSQUEDA */
         Solucion* BPA (); // Búsqueda Primero en Anchura

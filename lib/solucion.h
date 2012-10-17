@@ -30,7 +30,7 @@ extern void ParseFile (const char* path, Matriz* &mat);
 #define SOLUCION_H
 
 class Solucion{
-    public:
+    private:
         Matriz* _costMat;  // Matriz de costos
         uint32_t _costo;
         uint32_t _nGenerados;
@@ -38,36 +38,29 @@ class Solucion{
         uint16_t _nInitID;
         Nodo* _nSol;    // Nodo desde el que empezar a generar la solución
 
+        void Generar(); // Genera toda la información necesaria
+
+    public:
         Solucion (Nodo* n = NULL, uint32_t gene = 0, uint32_t expand = 0, uint16_t nInit = 0, const char* costPath = "datos/MatrizCostos.txt") : _costo(0), _nGenerados(gene), _nVisitados(expand), _nInitID(nInit) {
             _nSol = n;
             ParseFile(costPath, _costMat);
             this->Generar();
         }
 
-        void Generar(){
-            Nodo* n = _nSol;
+        friend ostream &operator<<(ostream& s,const Solucion &sol){
+            Nodo* n = sol._nSol;
             if (n != NULL){
                 while (n->GetPadre() != NULL){
-                    _costo += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
+                    cout << n->GetID() << "<-";
                     n = n->GetPadre();
                 }
+                cout << sol._nInitID << endl;
             }
+            s << "Costo: " << sol._costo << endl;
+            s << "Número de nodos generados: " << sol._nGenerados << endl;
+            s << "Número de nodos analizados: " << sol._nVisitados;
+            return s;
         }
-
-friend ostream &operator<<(ostream& s,const Solucion &sol){
-    Nodo* n = sol._nSol;
-    if (n != NULL){
-        while (n->GetPadre() != NULL){
-            cout << n->GetID() << "<-";
-            n = n->GetPadre();
-        }
-        cout << sol._nInitID << endl;
-    }
-    s << "Costo: " << sol._costo << endl;
-    s << "Número de nodos generados: " << sol._nGenerados << endl;
-    s << "Número de nodos analizados: " << sol._nVisitados;
-    return s;
-}
 
 };
 

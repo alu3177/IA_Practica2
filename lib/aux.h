@@ -68,7 +68,6 @@ void ParseFile (const char* path, Matriz* &mat){
             }
             mat = new Matriz(atoi(buff2));
             size = true;
-            //cout << atoi(buff2) << endl;     // DEBUG
             buff.clear();
             ResetChar(buff2, BUFFSIZE);
 
@@ -84,7 +83,6 @@ void ParseFile (const char* path, Matriz* &mat){
                   j++;
                // Introducir numero en la matriz
                }else if (!IsEmpty(buff2, BUFFSIZE)){
-                  //cout << "Insertando: " << atoi(buff2) << endl;    // DEBUG
                   mat->Set(fila, col, atoi(buff2));
                   col++;
                   ResetChar (buff2, BUFFSIZE);

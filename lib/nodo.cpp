@@ -26,7 +26,6 @@ void Nodo::AddHijo(Nodo* n){
     _hijos.push_back(n);
     _nHijos++;
     // Añadir hijos a un nodo implica que éste ha sido analizado
-    // TODO: Estudiar ésto <---
     if (!_analizado)
         _analizado = true;
 }

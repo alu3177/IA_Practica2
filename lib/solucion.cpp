@@ -14,3 +14,15 @@
  *          - Búsqueda Primero en Profundidad   (no informada)
  *          - Búsqueda A*                       (infomada)
  */
+
+#include "solucion.h"
+
+void Solucion::Generar(){
+    Nodo* n = _nSol;
+    if (n != NULL){
+        while (n->GetPadre() != NULL){
+            _costo += _costMat->Get(n->GetPadre()->GetID() - 1, n->GetID() - 1);
+            n = n->GetPadre();
+        }
+    }
+}
