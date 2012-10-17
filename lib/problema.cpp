@@ -33,18 +33,19 @@ void Problema::ExpandNodeInverse (Nodo* &n){
                                     //(Los nodos comienzan la numeración en 1 y las filas de la matriz en 0)
     Nodo* child;    // Puntero usado para añadir hijos
 
-    //for (uint16_t j = 0; j < _adyMat->GetDim(); j++){
-    for (uint16_t j = _adyMat->GetDim() - 1; j > 0; j--){
-        if (_adyMat->Get(fila, j) == 1){
+    uint16_t dim = _adyMat->GetDim();
+    for (uint16_t j = 0; j < dim; j++){
+    //for (uint16_t j = _adyMat->GetDim() - 1; j > 0; j--){
+        if (_adyMat->Get(fila, dim - j) == 1){
             // Si NO ES nodo Raíz
             if (n->GetID() != _initID){
-                if ((n->GetPadre()->GetID() != j + 1) && (j + 1 != _initID)){ // No añadimos el nodo padre a los hijos
-                    child = new Nodo(j + 1, n);
+                if ((n->GetPadre()->GetID() != dim - j) && (dim - j != _initID)){ // No añadimos el nodo padre a los hijos
+                    child = new Nodo(dim - j, n);
                     n->AddHijo(child);
                 }
             // Si ES nodo raíz
             } else {
-                child = new Nodo(j + 1, n);
+                child = new Nodo(dim - j, n);
                 n->AddHijo(child);
             }
         }
@@ -74,8 +75,12 @@ uint16_t Problema::CalculaFn (Nodo* &n){
     return (n->GetFn());
 }
 
+/* ***********************
+ * Algoritmos de búsqueda *
+ * ***********************/
+
 /* BÚSQUEDA PRIMERO EN ANCHURA */
-void Problema::BPA(){
+Solucion* Problema::BPA(){
     queue<Nodo*> abiertos;  // Cola con los nodos abiertos sin expandir
     uint32_t nGenerados = 1; // Número de nodos generados
     uint32_t nExpand = 1;    // Número de nodos expandidos/analizados (empieza a 1, pues ya hemos generado el nodo raíz)
@@ -91,7 +96,9 @@ void Problema::BPA(){
         if (actual->GetID() == _endID){
             finish = true;
             //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
+            //BuildResult(actual, nGenerados, nExpand);
+            Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
+            return sol;
         // Expandir el nodo actual
         } else {
             ExpandNode(actual);
@@ -104,10 +111,11 @@ void Problema::BPA(){
         }
         //cout << "Abiertos.Size = " << abiertos.size() << endl; // DEBUG
     }
+    return NULL;
 }
 
 /* BÚSQUEDA PRIMERO EN PROFUNDIDAD */
-void Problema::BPP(){
+Solucion* Problema::BPP(){
     stack<Nodo* > abiertos;  // Pila con punteros a nodos abiertos sin expandir
     vector<Nodo* > cerrados; // Array de punteros a nodos cerrados (no son el final)
     uint32_t nGenerados = 1; // Número de nodos generados
@@ -120,26 +128,32 @@ void Problema::BPP(){
     abiertos.push(n);
     while ((abiertos.size() > 0) && (!finish)){
         actual = abiertos.top(); abiertos.pop(); // Leemos el HEAD y lo extraemos
+        //cout << "actual " << actual->GetID() << endl;   // DEBUG
         // Si encontramos el NODO FINAL
         if (actual->GetID() == _endID){
             finish = true;
             //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
+            //BuildResult(actual, nGenerados, nExpand);
+            Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
+            return sol;
         // Expandir el nodo actual
         } else {
-            //cout << "actual " << actual->GetID() << endl;   // DEBUG
             cerrados.push_back(actual);
             ExpandNodeInverse(actual);
             nExpand++;
             for (uint16_t i = 0; i < actual->GetHijos()->size(); i++){
+
                 if ((!isInStack(abiertos, actual->GetHijos()->at(i))) && (!isInVector(cerrados, actual->GetHijos()->at(i)))){
                     abiertos.push(actual->GetHijos()->at(i));
+                    cout << "PUSH : " << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
                 }
+                //cout << abiertos.size() << endl;    // DEBUG
                 nGenerados++;
-                //cout << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
+                //cout << "Hijo[" << i << "] = " << actual->GetHijos()->at(i)->GetID() << endl; // DEBUG
             }
         }
     }
+    return NULL;
 }
 
 /* ****************************************************
@@ -147,7 +161,7 @@ void Problema::BPP(){
  * ****************************************************/
 
 /* BÚSQUEDA A* */
-void Problema::BAE(){
+Solucion* Problema::BAE(){
     vector<Nodo* > abiertos;  // Array con punteros a nodos abiertos sin expandir
     vector<Nodo* > cerrados;  // Array de punteros a nodos cerrados (no son el final)
     uint32_t nGenerados = 1;  // Número de nodos generados
@@ -165,7 +179,9 @@ void Problema::BAE(){
         if (actual->GetID() == _endID){
             finish = true;
             //cout << "FINAL !!" << endl;     // DEBUG
-            BuildResult(actual, nGenerados, nExpand);
+            //BuildResult(actual, nGenerados, nExpand);
+            Solucion *sol = new Solucion(actual, nGenerados, nExpand, _initID);
+            return sol;
         // Expandir el nodo actual
         } else {
             //cout << "actual " << actual->GetID() << endl;   // DEBUG
@@ -210,4 +226,5 @@ void Problema::BAE(){
             }
         }
     }
+    return NULL;
 }

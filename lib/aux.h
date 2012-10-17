@@ -84,9 +84,10 @@ void ParseFile (const char* path, Matriz* &mat){
 // Comprueba si el nodo 'n' está en la pila 's'
 bool isInStack (stack<Nodo* > s, Nodo* &n){
     while (s.size() > 0){
-        if (s.top() == n)
+        if ((s.top()->GetID() == n->GetID()) && (s.top()->GetPadre()->GetID() == n->GetPadre()->GetID()))
             return true;
-        s.pop();
+        else
+            s.pop();
     }
     return false;
 }
@@ -94,7 +95,7 @@ bool isInStack (stack<Nodo* > s, Nodo* &n){
 // Comprueba si el nodo 'n' está en el vector 'v'
 bool isInVector (vector<Nodo* > &v, Nodo* &n){
     for (uint16_t i = 0; i < v.size(); i++)
-        if (v[i] == n)
+        if ((v[i]->GetID() == n->GetID()) && (v[i]->GetPadre()->GetID() == n->GetPadre()->GetID()))
             return true;
     return false;
 }

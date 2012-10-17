@@ -47,8 +47,8 @@ friend ostream &operator<<(ostream& s,const Solucion &sol){
         cout << sol._nInitID << endl;
     }
     s << "Costo: " << sol._costo << endl;
-    s << "Número de nodo generados: " << sol._nGenerados << endl;
-    s << "Número de nodo analizados: " << sol._nVisitados;
+    s << "Número de nodos generados: " << sol._nGenerados << endl;
+    s << "Número de nodos analizados: " << sol._nVisitados;
     return s;
 }
 

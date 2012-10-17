@@ -37,7 +37,8 @@ class Nodo{
         void AddHijo(Nodo*);
         void Print();
 
-        /* SOBRECARGA DE OPERADORES */
+/*
+
         bool operator == (Nodo &n) const{
             //if (this->_padre != NULL)
             //    cout << this->_id << " == " << n.GetID() <<  " && " << this->_padre->GetID() << " == " << n.GetPadre()->GetID() <<   " && " << this->_level << " == " << n.GetLevel() << endl;  // DEBUG
@@ -48,6 +49,7 @@ class Nodo{
             //cout << "_fn: " << _fn << " n._fn: " << n.GetFn() << endl;
             return this->_fn < n.GetFn();
         }
+*/
 };
 
 

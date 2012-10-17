@@ -54,16 +54,16 @@ class Problema{
         uint16_t CalculaFn (Nodo* &n);
 
         /* ALGORITMOS DE BÚSQUEDA */
-        void BPA (); // Búsqueda Primero en Anchura
-        void BPP (); // Búsqueda Primero en Profundidad
-        void BAE (); // Búsqueda A*
-
+        Solucion* BPA (); // Búsqueda Primero en Anchura
+        Solucion* BPP (); // Búsqueda Primero en Profundidad
+        Solucion* BAE (); // Búsqueda A*
+/*
 void BuildResult (Nodo* n, uint32_t generados, uint32_t expandidos){
     Solucion sol(n, generados, expandidos, _initID);
     //sol.Generar();
     cout << sol << endl;
 }
-
+*/
 
 };
 
