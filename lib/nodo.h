@@ -54,5 +54,9 @@ class Nodo{
         void AddHijo(Nodo*);
         void Print();
 
+        /* MODIFICACIÓN */
+        inline void ClearHijos() { _hijos.clear(); }
+        /* MODIFICACIÓN */
+
 };
 #endif

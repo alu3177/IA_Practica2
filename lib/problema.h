@@ -60,7 +60,9 @@ class Problema{
 
         /* FUNCIONES DE MANEJO DE NODOS */
         void ExpandNode (Nodo* &n); // Expande el nodo n
-        void ExpandNodeInverse (Nodo* &n); // Expande el nodo n generando los hijos en orden inverso (de mayor a menor ID)
+        /* MODIFICACIÓN */
+        void ExpandNodemod(Nodo* &n); // Expande el nodo n, si va a expandir y encuentra un '9', elimina el resto de hijos y deja sólo al '9'
+        /* MODIFICACIÓN */
         uint16_t CalculaGn(Nodo* n);
         uint16_t CalculaFn (Nodo* &n);
 
@@ -75,6 +77,7 @@ class Problema{
         Solucion* BPA (); // Búsqueda Primero en Anchura
         Solucion* BPP (); // Búsqueda Primero en Profundidad
         Solucion* BAE (); // Búsqueda A*
+        Solucion* BAE_mod(); // Búsqueda A* de la modificación
 
 };
 

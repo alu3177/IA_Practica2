@@ -44,6 +44,12 @@ int main (){
         if (sol != NULL)
             cout << endl << "Búsqueda A*" << endl << *sol << endl;
 
+        /* MODIFICACIÓN */
+        sol = prob->BAE_mod();           // BAE
+        if (sol != NULL)
+            cout << endl << "Búsqueda A* MODIFICADO" << endl << *sol << endl;
+        /* MODIFICACIÓN */
+        
         cout << endl << "Pulse enter para continuar" << endl;
         cin.ignore().get();
     }
