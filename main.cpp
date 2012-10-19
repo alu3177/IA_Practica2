@@ -39,16 +39,18 @@ int main (){
         sol = prob->BPP();           // BPP
         if (sol != NULL)
             cout << endl << "Búsqueda Primero en Profundidad" << endl << *sol << endl;
-
+        
+        /* MODIFICACIÓN 2 */
+        sol = prob->BPP_mod();           // BPP
+        if (sol != NULL)
+            cout << endl << "Búsqueda Primero en Profundidad MODIFICADA" << endl << *sol << endl;
+        else
+            cout << endl << "No se ha encontrado solución" << endl;
+        /* MODIFICACIÓN 2 */
+        
         sol = prob->BAE();           // BAE
         if (sol != NULL)
             cout << endl << "Búsqueda A*" << endl << *sol << endl;
-
-        /* MODIFICACIÓN */
-        sol = prob->BAE_mod();           // BAE
-        if (sol != NULL)
-            cout << endl << "Búsqueda A* MODIFICADO" << endl << *sol << endl;
-        /* MODIFICACIÓN */
         
         cout << endl << "Pulse enter para continuar" << endl;
         cin.ignore().get();
